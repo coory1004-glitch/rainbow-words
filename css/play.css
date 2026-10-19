@@ -1,52 +1,239 @@
-/* play.css (owner: engine) — word pictures + icons (images.js), the game screen, effects (fx.js) */
+/* play.css (owner: engine) — word pictures + icons (images.js), the game screen + its overlays, effects (fx.js) */
 
 /* ---------- pictures (js/images.js) ---------- */
 /* sized by font-size so each screen can scale them like text: width/height = 1em */
 .pic,.ico{display:inline-block; width:1em; height:1em; object-fit:contain; vertical-align:middle; flex:none; -webkit-user-drag:none; pointer-events:none}
 .pic{display:block}
-.pic.heart{filter:drop-shadow(0 .03em .02em rgba(74,43,94,.18))}
+.pic.heart{filter:drop-shadow(0 .035em .025em rgba(74,43,94,.22))}
 
 /* ---------- game screen ---------- */
-.play{gap:10px; padding-bottom:max(14px, env(safe-area-inset-bottom, 0px))}
-.ask{
-  --face:#ffffff;
-  align-self:center; max-width:100%;
-  display:flex; align-items:center; gap:12px;
-  padding:8px 22px 8px 10px; border-radius:999px;
-  color:var(--ink); text-align:left;
-  box-shadow:0 6px 0 var(--shade), 0 12px 20px var(--w-drop);
+.play{gap:clamp(10px, 1.6vh, 16px); padding-block:max(10px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-bottom, 0px)); min-height:100vh; min-height:100dvh}
+.play .hud{gap:10px}
+.play .hud .round{width:54px; height:54px}
+.play .hud .round svg{width:26px; height:26px}
+
+/* 8 progress slots that fill with stars */
+.slots{
+  justify-self:center; width:100%; max-width:420px;
+  display:flex; align-items:center; justify-content:center; gap:clamp(3px, 1vw, 8px);
+  padding:6px clamp(6px, 1.6vw, 12px); border-radius:999px;
+  background:rgba(255,255,255,.5);
+  box-shadow:inset 0 2px 5px rgba(74,43,94,.14), 0 1px 0 rgba(255,255,255,.8);
 }
-.spk{flex:none; width:52px; height:52px; border-radius:50%; background:var(--w-accent); color:#fff; display:grid; place-items:center; animation:ring 1.6s ease-out infinite}
-.spk svg{width:28px; height:28px}
+body[data-world="halloween"] .slots{background:rgba(20,8,40,.45); box-shadow:inset 0 2px 6px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.12)}
+.slot{
+  position:relative; flex:0 1 34px; min-width:0; aspect-ratio:1; border-radius:50%;
+  background:radial-gradient(circle at 50% 38%, #fff 0 40%, #f3ecfa 100%);
+  box-shadow:inset 0 2px 3px rgba(74,43,94,.2), 0 1px 0 rgba(255,255,255,.9);
+}
+body[data-world="halloween"] .slot{background:radial-gradient(circle at 50% 38%, #6a4c96, #48306e); box-shadow:inset 0 2px 3px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.15)}
+body[data-world="halloween"] .slot.now{background:#6a4c96; box-shadow:0 0 0 3px var(--w-accent), 0 0 12px var(--w-accent)}
+.slot img{position:absolute; left:-14%; top:-16%; width:128%; height:128%; opacity:0; transform:scale(.2) rotate(-60deg); pointer-events:none}
+.slot.on img{opacity:1; transform:none; animation:slotPop .6s cubic-bezier(.3,1.6,.5,1) both; filter:drop-shadow(0 2px 1px rgba(160,90,0,.25))}
+.slot.now{background:#fff; box-shadow:0 0 0 3px var(--w-accent), 0 0 12px var(--w-accent); animation:slotNow 1.2s ease-in-out infinite}
+@keyframes slotPop{0%{opacity:0; transform:scale(.2) rotate(-60deg)}60%{opacity:1; transform:scale(1.35) rotate(8deg)}100%{opacity:1; transform:none}}
+@keyframes slotNow{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+
+/* star counter (#sesStars) */
+.play .pill{
+  gap:4px; padding:5px 14px 5px 6px; min-height:50px;
+  background:linear-gradient(#fff, #fff7e0); border:3px solid #ffd23f;
+  box-shadow:0 4px 0 #e9a800, 0 8px 14px var(--w-drop);
+  font-family:var(--f-en); font-weight:700; font-size:24px; color:#b06d00;
+}
+.play .pill .ico{font-size:36px; filter:drop-shadow(0 2px 1px rgba(160,90,0,.25))}
+.play .pill b{min-width:1.1ch; text-align:center}
+
+/* the spoken question: speaker + "Go get" + the word in big rainbow letters */
+.ask{
+  position:relative; align-self:center; max-width:100%; min-height:74px;
+  display:flex; align-items:center; gap:12px;
+  padding:7px 26px 7px 8px; border-radius:999px;
+  background:linear-gradient(#ffffff 55%, #fff4fa);
+  border:4px solid var(--w-edge);
+  box-shadow:0 6px 0 var(--w-shade), 0 14px 24px var(--w-drop), inset 0 -3px 0 rgba(74,43,94,.05);
+  color:var(--ink); text-align:left;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.ask:active{transform:translateY(5px); box-shadow:0 1px 0 var(--w-shade), 0 6px 12px var(--w-drop)}
+.spk{
+  position:relative; flex:none; width:56px; height:56px; border-radius:50%;
+  background:var(--w-accent); color:#fff; display:grid; place-items:center;
+  box-shadow:inset 0 -4px 0 rgba(0,0,0,.14), 0 3px 0 rgba(0,0,0,.08);
+  animation:ring 1.8s ease-out infinite;
+}
+.spk::before{content:""; position:absolute; inset:3px 8px auto; height:45%; border-radius:50% 50% 45% 45%; background:linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,0))}
+.spk svg{position:relative; width:30px; height:30px; filter:drop-shadow(0 1px 0 rgba(0,0,0,.12))}
 .ask-t{display:flex; flex-direction:column; min-width:0}
-.ask-t small{font-family:var(--f-en); font-weight:700; font-size:13px; color:var(--ink-soft); letter-spacing:.03em}
-.ask-word{font-family:var(--f-en); font-weight:700; color:var(--w-accent-ink); line-height:1.15}
+.ask-t small{font-family:var(--f-en); font-weight:600; font-size:14px; color:var(--ink-soft); letter-spacing:.04em; line-height:1.1}
+.ask-word{font-family:var(--f-en); font-weight:700; line-height:1.12; justify-content:flex-start; flex-wrap:nowrap; white-space:nowrap; font-size:40px}
+.ask-word .ltr{text-shadow:0 .05em 0 rgba(74,43,94,.14)}
+.ask.hinting{animation:askGlow 1.1s ease-in-out infinite}
+.ask.hinting .spk{animation:spkPulse .9s ease-in-out infinite}
+@keyframes askGlow{0%,100%{box-shadow:0 6px 0 var(--w-shade), 0 0 0 0 rgba(255,210,63,0), 0 14px 24px var(--w-drop)}50%{box-shadow:0 6px 0 var(--w-shade), 0 0 0 7px rgba(255,210,63,.65), 0 14px 24px var(--w-drop)}}
+@keyframes spkPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+/* the canvas field */
 .field{
   position:relative; flex:1; min-height:300px;
-  border-radius:30px; overflow:hidden;
+  border-radius:32px; overflow:hidden;
   border:5px solid #fff;
-  box-shadow:0 10px 0 rgba(74,43,94,.12), 0 18px 30px var(--w-drop);
-  touch-action:none;
+  background:var(--w-top);
+  box-shadow:0 8px 0 rgba(74,43,94,.10), 0 20px 36px var(--w-drop);
+  touch-action:none; isolation:isolate;
 }
+body[data-world="halloween"] .field{border-color:#efe2ff; box-shadow:0 8px 0 rgba(0,0,0,.25), 0 20px 36px rgba(0,0,0,.35)}
+.field::after{content:""; position:absolute; inset:0; z-index:1; border-radius:27px; pointer-events:none; box-shadow:inset 0 4px 12px rgba(74,43,94,.14), inset 0 0 0 1.5px rgba(74,43,94,.06)}
 .field canvas{position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:pointer}
 .field-cue{
-  position:absolute; left:50%; bottom:16px; transform:translateX(-50%);
-  margin:0; padding:8px 16px; border-radius:999px;
-  background:rgba(255,255,255,.9); color:var(--ink);
-  font-size:17px; white-space:nowrap; pointer-events:none;
-  animation:blink 1.6s ease-in-out infinite;
+  position:absolute; left:50%; bottom:16px; z-index:2; transform:translateX(-50%);
+  margin:0; padding:9px 18px; border-radius:999px; max-width:calc(100% - 24px);
+  background:rgba(255,255,255,.94); color:var(--ink); border:3px solid var(--w-edge);
+  box-shadow:0 4px 0 var(--w-shade), 0 8px 16px rgba(74,43,94,.16);
+  font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none;
+  animation:cueBob 1.8s ease-in-out infinite;
+  transition:opacity .35s ease, transform .35s ease;
+}
+.field-cue.gone{opacity:0; transform:translate(-50%, 20px); animation:none}
+@keyframes cueBob{0%,100%{transform:translate(-50%, 0)}50%{transform:translate(-50%, -5px)}}
+
+/* ---------- overlays inside the field ---------- */
+.ov{position:absolute; inset:0; z-index:3; display:grid; place-items:center; pointer-events:none; overflow:hidden}
+.ov.in{animation:ovIn .25s ease-out both}
+.ov.out{animation:ovOut .25s ease-in both}
+@keyframes ovIn{0%{opacity:0}100%{opacity:1}}
+@keyframes ovOut{0%{opacity:1}100%{opacity:0}}
+
+/* Ready, set, go! */
+.ov-ready{background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.7), rgba(255,255,255,.25) 75%)}
+body[data-world="halloween"] .ov-ready{background:radial-gradient(circle at 50% 50%, rgba(36,19,63,.55), rgba(36,19,63,.25) 75%)}
+.rsg{display:grid; place-items:center; width:100%}
+.rsg-w{grid-area:1/1; font-size:clamp(60px, 17vw, 132px); opacity:0; --wd:0ms}
+.rsg-w.w1{animation:rsgStep .52s ease-out 0ms both}
+.rsg-w.w2{--wd:470ms; animation:rsgStep .52s ease-out 470ms both}
+.rsg-w.w3{--wd:940ms; font-size:clamp(76px, 22vw, 168px); animation:rsgGo .7s cubic-bezier(.3,1.6,.5,1) 940ms both}
+.rsg .ltr{animation-delay:calc(var(--wd) + var(--d, 0ms)); text-shadow:0 .05em 0 #fff, 0 -.05em 0 #fff, .05em 0 0 #fff, -.05em 0 0 #fff, .04em .04em 0 #fff, -.04em .04em 0 #fff, .04em -.04em 0 #fff, -.04em -.04em 0 #fff, 0 .14em 0 rgba(74,43,94,.18)}
+.rsg .wgrp{display:inline-flex}
+@keyframes rsgStep{0%{opacity:0; transform:scale(.4)}22%{opacity:1; transform:scale(1.12)}40%{transform:scale(1)}80%{opacity:1; transform:scale(1)}100%{opacity:0; transform:scale(1.25)}}
+@keyframes rsgGo{0%{opacity:0; transform:scale(.3) rotate(-8deg)}100%{opacity:1; transform:none}}
+
+/* word reveal banner */
+.ov-reveal{background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.55), rgba(255,255,255,.1) 75%)}
+body[data-world="halloween"] .ov-reveal{background:radial-gradient(circle at 50% 50%, rgba(36,19,63,.45), rgba(36,19,63,.15) 75%)}
+.rv-rays{
+  position:absolute; left:50%; top:50%; width:max(170%, 900px); aspect-ratio:1; margin:calc(max(170%, 900px) / -2) 0 0 calc(max(170%, 900px) / -2);
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, var(--ray) 2.5deg 8deg, rgba(255,255,255,0) 11deg 22.5deg);
+  -webkit-mask-image:radial-gradient(circle, #000 10%, transparent 48%); mask-image:radial-gradient(circle, #000 10%, transparent 48%);
+  animation:spin 14s linear infinite;
+}
+.rv-card{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:2px;
+  min-width:min(230px, 70%); max-width:calc(100% - 28px);
+  padding:16px 28px 14px; border-radius:38px;
+  background:linear-gradient(#ffffff 60%, #fff4fa);
+  border:5px solid var(--w-edge);
+  box-shadow:0 9px 0 var(--w-shade), 0 26px 44px rgba(74,43,94,.32), inset 0 -5px 0 rgba(74,43,94,.04);
+  animation:cardPop .55s cubic-bezier(.3,1.55,.5,1) both;
+}
+.ov-reveal,.ov-bonus{--ray:rgba(255,255,255,.8); --disc:#fff0f8}
+body[data-world="halloween"] .ov-reveal,body[data-world="halloween"] .ov-bonus{--ray:rgba(255,214,150,.28); --disc:#f3e9ff}
+body[data-world="colors"] .ov-reveal{--disc:#fff6d6}
+body[data-world="cars"] .ov-reveal{--disc:#e6f5ff}
+body[data-world="sweets"] .ov-reveal{--disc:#fff0e2}
+.rv-card::before{content:""; position:absolute; inset:6px; border-radius:30px; border:2.5px dashed var(--w-edge); opacity:.6; pointer-events:none}
+.rv-sp{position:absolute; width:.3em; height:.3em; pointer-events:none; animation:twk 1.2s ease-in-out infinite}
+.rv-sp.sp1{right:-.06em; top:.02em}
+.rv-sp.sp2{left:-.04em; bottom:.06em; width:.22em; height:.22em; animation-delay:-.6s}
+@keyframes twk{0%,100%{transform:scale(.7) rotate(-10deg); opacity:.6}50%{transform:scale(1.1) rotate(10deg); opacity:1}}
+.rv-pic{
+  position:relative; font-size:clamp(96px, min(34vw, 21vh), 180px); width:1.18em; height:1.18em; display:grid; place-items:center; border-radius:50%;
+  background:radial-gradient(circle at 50% 46%, #fff 0 50%, var(--disc) 70%, rgba(255,255,255,0) 71%);
+}
+.rv-pic .pic{animation:picBounce .9s cubic-bezier(.3,1.5,.5,1) .08s both; filter:drop-shadow(0 .05em .04em rgba(74,43,94,.25))}
+.rv-word{font-size:56px; flex-wrap:nowrap}
+.rv-word .ltr{animation-delay:calc(180ms + var(--d, 0ms))}
+.rv-new{
+  position:absolute; top:-18px; right:-16px; z-index:2;
+  display:flex; align-items:center; gap:4px; padding:7px 14px 7px 8px; border-radius:999px;
+  background:linear-gradient(#ff8cc6, #ff4fa3); color:#fff; border:3px solid #fff;
+  box-shadow:0 4px 0 #c93a82, 0 10px 18px rgba(201,58,130,.35);
+  font-family:var(--f-en); font-weight:700; font-size:18px; white-space:nowrap; letter-spacing:.01em;
+  text-shadow:0 2px 0 rgba(150,20,90,.3);
+  opacity:0; transform:scale(0) rotate(-30deg);
+}
+.rv-new img{width:30px; height:30px; margin:-6px 0; filter:drop-shadow(0 2px 1px rgba(150,20,90,.3))}
+.rv-new.show{animation:stamp .6s cubic-bezier(.3,1.7,.5,1) both}
+@keyframes cardPop{0%{opacity:0; transform:scale(.4) translateY(30px)}100%{opacity:1; transform:none}}
+@keyframes picBounce{0%{transform:scale(.3) rotate(-14deg)}60%{transform:scale(1.12) rotate(4deg)}100%{transform:none}}
+@keyframes stamp{0%{opacity:0; transform:scale(2.2) rotate(-20deg)}100%{opacity:1; transform:rotate(9deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* the word she tapped by mistake (picture + word, top of the field) */
+.ov-tag{
+  inset:14px auto auto 50%; display:flex; align-items:center; gap:8px; transform:translateX(-50%);
+  padding:6px 18px 6px 8px; border-radius:999px; background:#fff; color:var(--ink);
+  border:3px solid var(--w-edge); box-shadow:0 4px 0 var(--w-shade), 0 10px 18px rgba(74,43,94,.2);
+  font-family:var(--f-en); font-weight:700; font-size:24px; white-space:nowrap; overflow:visible;
+}
+.ov-tag .tag-pic{font-size:40px}
+.ov-tag.in{animation:tagIn .4s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes tagIn{0%{opacity:0; transform:translate(-50%, -30px) scale(.6)}100%{opacity:1; transform:translateX(-50%)}}
+
+/* bonus stars */
+.ov-bonus{background:radial-gradient(circle at 50% 50%, rgba(255,255,255,.7), rgba(255,255,255,.3) 75%)}
+body[data-world="halloween"] .ov-bonus{background:radial-gradient(circle at 50% 50%, rgba(36,19,63,.6), rgba(36,19,63,.3) 75%)}
+.bn-card{gap:0; padding:0 30px 18px}
+.bn-stars{display:flex; gap:4px; margin-top:calc(clamp(76px, 22vw, 116px) * -.45)}
+.bn-stars img{width:clamp(76px, 22vw, 116px); height:auto; filter:drop-shadow(0 6px 6px rgba(160,90,0,.3)); animation:starRock 1s ease-in-out infinite alternate}
+.bn-stars .s2{animation-delay:-.5s}
+.bn-word{font-size:clamp(40px, 11vw, 72px); flex-wrap:nowrap}
+.bn-word .ltr{text-shadow:0 .05em 0 #fff, 0 -.05em 0 #fff, .05em 0 0 #fff, -.05em 0 0 #fff, .04em .04em 0 #fff, -.04em .04em 0 #fff, .04em -.04em 0 #fff, -.04em -.04em 0 #fff, 0 .13em 0 rgba(74,43,94,.2)}
+.bn-plus{font-family:var(--f-en); font-weight:700; font-size:clamp(40px, 10vw, 64px); color:#ffb400; line-height:1;
+  text-shadow:0 .05em 0 #fff, 0 -.05em 0 #fff, .05em 0 0 #fff, -.05em 0 0 #fff, 0 .12em 0 rgba(160,90,0,.3); animation:popIn .5s cubic-bezier(.3,1.6,.5,1) .35s both}
+@keyframes starRock{0%{transform:rotate(-10deg) scale(1)}100%{transform:rotate(10deg) scale(1.08)}}
+
+/* small screens: keep the chip, HUD and field inside a phone without scrolling */
+@media (max-width:420px){
+  .play .hud{gap:8px}
+  .play .hud .round{width:50px; height:50px}
+  .play .pill{min-height:46px; font-size:21px; padding-right:11px}
+  .play .pill .ico{font-size:32px}
+  .ask{min-height:68px; padding-right:22px; gap:10px}
+  .spk{width:52px; height:52px}
+  .rv-new{font-size:16px; right:-10px}
+}
+@media (max-height:620px){
+  .rv-pic{font-size:clamp(80px, 22vh, 150px)}
+  .rv-word{font-size:40px}
 }
 
 /* ---------- effects (js/fx.js) ---------- */
 #fx{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:40}
-.fly{position:fixed; left:0; top:0; z-index:50; pointer-events:none; width:46px; height:46px}
+.fly{position:fixed; left:0; top:0; z-index:50; pointer-events:none; width:52px; height:52px; will-change:transform; filter:drop-shadow(0 4px 4px rgba(160,90,0,.3))}
 .toast{
-  position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:60;
+  position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom, 0px)); z-index:60;
   transform:translateX(-50%); max-width:calc(100% - 32px);
-  padding:12px 20px; border-radius:999px;
-  background:#fff; color:var(--ink); border:3px solid var(--sun);
-  box-shadow:0 10px 24px rgba(74,43,94,.25);
-  font-family:var(--f-ko); font-size:18px; text-align:center;
-  animation:toastIn .35s cubic-bezier(.3,1.5,.5,1) both;
+  display:flex; align-items:center; gap:10px;
+  padding:12px 22px 12px 16px; border-radius:24px;
+  background:linear-gradient(#ffffff 60%, #fff4fa); color:var(--ink); border:4px solid #ff9fd0;
+  box-shadow:0 6px 0 #e47db5, 0 16px 30px rgba(74,43,94,.28);
+  font-family:var(--f-ko); font-size:19px; line-height:1.3; text-align:left;
+  animation:toastIn .45s cubic-bezier(.3,1.5,.5,1) both;
 }
-@keyframes toastIn{0%{opacity:0; transform:translateX(-50%) scale(.5)}100%{opacity:1; transform:translateX(-50%)}}
+.toast .ico{font-size:34px; flex:none}
+.toast.bye{animation:toastOut .3s ease-in both}
+@keyframes toastIn{0%{opacity:0; transform:translate(-50%, 40px) scale(.7)}100%{opacity:1; transform:translateX(-50%)}}
+@keyframes toastOut{0%{opacity:1; transform:translateX(-50%)}100%{opacity:0; transform:translate(-50%, 24px) scale(.9)}}
+
+/* phone held sideways: the question sits beside the HUD so the field keeps most of the height */
+@media (max-height:520px) and (orientation:landscape){
+  .play{display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto minmax(0,1fr);
+        height:100vh; height:100dvh; min-height:0; column-gap:12px; row-gap:8px; padding-block:max(6px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-bottom, 0px))}
+  .play .hud{grid-column:1; grid-row:1; align-self:center}
+  .play .hud .round{width:46px; height:46px}
+  .play .pill{min-height:44px}
+  .ask{grid-column:2; grid-row:1; min-height:56px; padding:4px 18px 4px 6px}
+  .ask .spk{width:44px; height:44px}
+  .ask-word{font-size:28px}
+  .field{grid-column:1 / -1; grid-row:2; min-height:0; border-radius:24px}
+}

@@ -334,8 +334,8 @@ const WINGS = {
       <path d="M34 128C44 132 58 140 68 148" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".25"/>`),
   angel: u => mirror([[208, 80], [192, 78], [176, 70], [161, 60], [147, 48]].map(([a, L]) => {
       const r = a * Math.PI / 180, cx = n1(96 + Math.cos(r) * (L / 2 + 2)), cy = n1(172 + Math.sin(r) * (L / 2 + 2));
-      return `<ellipse cx="${cx}" cy="${cy}" rx="${L / 2}" ry="10" transform="rotate(${a} ${cx} ${cy})" fill="url(#wa${u})" stroke="#9fb0e2" stroke-width="2"/>`;
-    }).join('') + `<path d="M98 164C90 140 66 120 40 122C30 124 28 134 36 140C50 152 74 168 98 186Z" fill="#fff" stroke="#9fb0e2" stroke-width="2" stroke-linejoin="round"/>
+      return `<ellipse cx="${cx}" cy="${cy}" rx="${L / 2}" ry="10" transform="rotate(${a} ${cx} ${cy})" fill="url(#wa${u})" stroke="#8d9fd8" stroke-width="2"/>`;
+    }).join('') + `<path d="M98 164C90 140 66 120 40 122C30 124 28 134 36 140C50 152 74 168 98 186Z" fill="#fff" stroke="#8d9fd8" stroke-width="2" stroke-linejoin="round"/>
       <path d="M40 140Q48 146 54 144Q60 154 68 152Q74 162 82 160" fill="none" stroke="#c9d2f0" stroke-width="1.8" stroke-linecap="round"/>
       <path d="M44 128C58 126 74 136 84 150" fill="none" stroke="#eef2ff" stroke-width="3" stroke-linecap="round"/>${spark(30, 168, 4.4, '#fff')}`),
   rainbow: u => {
@@ -352,7 +352,7 @@ const wingDefs = (id, u) => ({
   fairy: lin(`wf${u}`, [[0, '#e6f7ff', .95], [.6, '#b9e6ff', .85], [1, '#e4d4ff', .85]], 0, 0, 1, 1) + lin(`wp${u}`, [[0, '#ffe8f6', .95], [1, '#ffc2e4', .85]], 0, 0, 1, 1),
   butterfly: lin(`wb1${u}`, [[0, '#ff7fb8'], [.6, '#ffa0c8'], [1, '#ffd08a']], 1, 1, 0, 0) + lin(`wb2${u}`, [[0, '#ffe07a'], [1, '#ff9ac0']], 0, 0, 1, 1),
   bat: lin(`wt${u}`, [[0, '#8a5cc4'], [1, '#3a2266']], 1, 0, 0, 1),
-  angel: lin(`wa${u}`, [[0, '#ffffff'], [.45, '#f3f6ff'], [1, '#c7d3f7']], 0, 0, 0, 1),
+  angel: lin(`wa${u}`, [[0, '#ffffff'], [.4, '#f1f5ff'], [1, '#b4c5f4']], 0, 0, 0, 1),
 }[id] || '');
 
 /* ================= hand items (grip at 0,0; the item rises along -y) ================= */

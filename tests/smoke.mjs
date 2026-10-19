@@ -211,6 +211,9 @@ try {
   }
   await poll(() => page.locator(`[data-act="item"][data-cat="${pick.cid}"][data-id="${pick.id}"]`).count(), { timeout:5000 });
   if (!(await tap(`[data-act="item"][data-cat="${pick.cid}"][data-id="${pick.id}"]`))) throw new Error(`item ${pick.cid}:${pick.id} not on screen`);
+  // tapping a locked item only tries it on; the big buy button makes the purchase
+  await poll(() => page.locator('[data-act="buy"]').count(), { timeout:3000 });
+  if (await page.locator('[data-act="buy"]').count()) await tap('[data-act="buy"]');
   const ok = await poll(async () => { const P = (await appState()).P; return P.owned[pick.cid + ':' + pick.id] && P.wear[pick.cid] === pick.id && P.stars === before.stars - pick.price; }, { timeout:5000 });
   const p = newProblems();
   report(!!ok && !p.length, 'closet: buy one affordable item', `${pick.cid}:${pick.id} for ${pick.price} stars` + (p.length ? ' | ' + p.join(' | ') : ''));

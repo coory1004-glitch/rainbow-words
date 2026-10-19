@@ -25,8 +25,8 @@
 .stage-av .avatar .eye{transform-box:fill-box; transform-origin:center; animation:avBlink 5.2s ease-in-out infinite}
 .stage-av .avatar .eye + .eye{animation-delay:.02s}
 .stage-av.hop .avatar{animation:avHop .62s cubic-bezier(.3,1.6,.5,1) both, avBreathe 3.4s ease-in-out .62s infinite}
-.stage-av .petbox{position:absolute; left:76%; bottom:1%; width:40%; aspect-ratio:1; z-index:2; display:block}
-@supports not (aspect-ratio:1){ .stage-av .petbox{height:26.6%} }
+.stage-av .petbox{position:absolute; left:72%; bottom:1%; width:37%; aspect-ratio:1; z-index:2; display:block}
+@supports not (aspect-ratio:1){ .stage-av .petbox{height:24.6%} }
 .stage-av .pet{display:block; width:100%; height:100%; object-fit:contain; font-size:inherit;
   filter:drop-shadow(0 6px 4px rgba(74,43,94,.22)); transform-origin:50% 100%; animation:petBob 2.6s ease-in-out infinite}
 .stagebox.small .stage-av .petbox{left:74%; width:38%}
@@ -118,7 +118,7 @@
 }
 .trytag .ico{width:24px; height:24px}
 .trybar{
-  position:relative; z-index:5; align-self:center; flex:none; margin-top:16px;
+  position:relative; z-index:5; align-self:center; flex:none; margin-top:14px;
   display:flex; align-items:center; gap:10px; padding:8px; border-radius:999px;
   background:rgba(255,255,255,.95); box-shadow:0 10px 24px rgba(74,43,94,.25), 0 0 0 3px rgba(255,255,255,.7);
   animation:tryIn .5s cubic-bezier(.3,1.5,.5,1) both; white-space:nowrap;
@@ -128,8 +128,9 @@
   display:inline-flex; align-items:center; gap:6px; min-height:62px;
   padding:6px 22px 6px 10px; border-radius:999px; border-width:3px; color:#fff;
   box-shadow:0 6px 0 var(--shade), 0 10px 18px rgba(196,42,119,.35);
-  animation:buyPulse 1.4s ease-in-out infinite;
+  position:relative;
 }
+.buy::after{content:''; position:absolute; inset:-3px; border-radius:inherit; pointer-events:none; animation:buyRing 1.5s ease-out infinite}
 .buy .ico{width:44px; height:44px; filter:drop-shadow(0 2px 2px rgba(120,20,70,.35))}
 .buy b{font-family:var(--f-en); font-weight:700; font-size:32px; line-height:1; text-shadow:0 2px 0 rgba(150,20,80,.35)}
 .buy span{font-size:20px; margin-left:4px}
@@ -150,7 +151,7 @@
 .closet .shelf .row{padding-top:0}
 
 @keyframes tryIn{0%{opacity:0; transform:translateY(-30%) scale(.6)}100%{opacity:1; transform:none}}
-@keyframes buyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes buyRing{0%{box-shadow:0 0 0 0 rgba(255,95,174,.65)}100%{box-shadow:0 0 0 16px rgba(255,95,174,0)}}
 @keyframes tryRing{0%{box-shadow:0 5px 0 var(--shade), 0 0 0 0 rgba(183,155,255,.7)}100%{box-shadow:0 5px 0 var(--shade), 0 0 0 14px rgba(183,155,255,0)}}
 
 /* tablets and desktops in landscape: stage on the left, shop on the right */
@@ -166,5 +167,8 @@
 }
 @media (max-height:520px) and (orientation:landscape){
   .screen.closet{height:auto; min-height:0}
+  .closet-grid{align-items:start}
+  .stage-wrap{position:sticky; top:8px}
+  .closet .stagebox{flex:none; height:max(250px, calc(100vh - 40px))}
   .closet .shelf{overflow:visible; -webkit-mask-image:none; mask-image:none}
 }

@@ -854,12 +854,13 @@ const worm = {
       G.items.push(it); placeItem(it);
     });
   },
-  press(x, y){ G.aim = { x, y }; ripple(x, y); },
-  move(x, y, e){ if (G.down || (e && e.pointerType === 'mouse')) { if (G.aim) { G.aim.x = x; G.aim.y = y; } else G.aim = { x, y }; } },
+  press(x, y){ G.aim = { x, y }; ripple(x, y); if (st) st.steerT = G.t; },
+  move(x, y, e){ if (G.down || (e && e.pointerType === 'mouse')) { if (G.aim) { G.aim.x = x; G.aim.y = y; } else G.aim = { x, y }; if (st) st.steerT = G.t; } },
   key(e){
     const d = { ArrowUp:[0, -1], ArrowDown:[0, 1], ArrowLeft:[-1, 0], ArrowRight:[1, 0] }[e.key];
     if (!d || !G.head) return false;
     G.aim = { x:G.head.x + d[0] * G.W, y:G.head.y + d[1] * G.H };
+    if (st) st.steerT = G.t;
     return true;
   },
   update(dt){
@@ -1014,7 +1015,8 @@ function items(dt){
         let away = Math.atan2(-dy, -dx) - h.a; away = Math.atan2(Math.sin(away), Math.cos(away));
         st.recoil = away * .75; st.recoilT = .2;                                   // the worm bonks and turns away
         emit(it.x - dx / n * it.r, it.y - dy / n * it.r, 6, U * 2.5, U * .1, K_DOT);
-        if (st.oopsCool <= 0) { st.oopsCool = .9; oops(it.j); }
+        const steering = G.down || G.t - (st.steerT ?? -99) < 1.5;           // only her own moves count as a wrong pick
+        if (steering && st.oopsCool <= 0) { st.oopsCool = .9; oops(it.j); }
       }
     }
   }

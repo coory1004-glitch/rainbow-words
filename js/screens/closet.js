@@ -35,8 +35,8 @@ function tryBarHTML(){
         <span class="need-n">${iconHTML('star')}<b>${P.stars}</b><small>/${price}</small></span>
       </div>
       <button class="go toy" data-act="pickgame" data-game="${store.S.game}" aria-label="게임하러 가기">${iconHTML('game')}</button>`
-    : `<button class="buy toy" data-act="clbuy" aria-label="별 ${price}개로 사기">${iconHTML('star')}<b>${price}</b><span>사기</span></button>`;
-  return `<div class="trybar${need ? ' short' : ''}">${body}<button class="tryx" data-act="cluntry" aria-label="그만 입어 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></button></div>`;
+    : `<button class="buy toy" data-act="buy" aria-label="별 ${price}개로 사기">${iconHTML('star')}<b>${price}</b><span>사기</span></button>`;
+  return `<div class="trybar${need ? ' short' : ''}">${body}<button class="tryx" data-act="untry" aria-label="그만 입어 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></svg></button></div>`;
 }
 
 function stageWrapHTML(){
@@ -103,7 +103,7 @@ function wearItem(cid, id, en){
 function tryItem(cid, id, en, price){
   trial = { cid, id };
   refresh();
-  sfx.whoosh?.(); sfx.pop();
+  if (sfx.whoosh) sfx.whoosh(); else sfx.pop();
   strike('idle'); stageBurst(12);
   say([en, store.P.stars >= price ? 'Try it on!' : "Let's get more stars!"]);
 }
@@ -117,7 +117,7 @@ function buy(){
   P.stars -= price; P.owned[cid + ':' + id] = 1; P.wear[cid] = id; save();
   trial = null;
   refresh();
-  sfx.fanfare(); sfx.buy?.();
+  sfx.fanfare(); sfx.sparkle?.();
   say(Math.random() < .7 ? ['Wow!', en] : 'So pretty!');
   strike('cheer', 1900); stageBurst(80);
   const pill = app.querySelector('.closet .bar .pill'); if (pill) wiggle(pill);
@@ -126,7 +126,8 @@ function buy(){
 
 registerScreen('closet', {
   html:closetHTML,
-  unmount(){ trial = null; clearTimeout(poseT); },
+  // render() unmounts before every re-render too; only a real exit drops the try-on
+  unmount(){ clearTimeout(poseT); if (store.S.screen !== 'closet') trial = null; },
 });
 registerActions({
   closet: () => { trial = null; preload(['common']); sfx.pop(); say('Dress up!'); go('closet'); },
@@ -139,6 +140,6 @@ registerActions({
     if (trial && trial.cid === cid && trial.id === id) { sfx.pop(); say(en); strike('idle'); return; }
     tryItem(cid, id, en, price);
   },
-  clbuy: () => buy(),
-  cluntry: () => { trial = null; sfx.pop(); refresh(); },
+  buy: () => buy(),
+  untry: () => { trial = null; sfx.pop(); refresh(); },
 });
