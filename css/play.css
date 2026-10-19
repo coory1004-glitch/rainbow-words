@@ -1,0 +1,52 @@
+/* play.css (owner: engine) — word pictures + icons (images.js), the game screen, effects (fx.js) */
+
+/* ---------- pictures (js/images.js) ---------- */
+/* sized by font-size so each screen can scale them like text: width/height = 1em */
+.pic,.ico{display:inline-block; width:1em; height:1em; object-fit:contain; vertical-align:middle; flex:none; -webkit-user-drag:none; pointer-events:none}
+.pic{display:block}
+.pic.heart{filter:drop-shadow(0 .03em .02em rgba(74,43,94,.18))}
+
+/* ---------- game screen ---------- */
+.play{gap:10px; padding-bottom:max(14px, env(safe-area-inset-bottom, 0px))}
+.ask{
+  --face:#ffffff;
+  align-self:center; max-width:100%;
+  display:flex; align-items:center; gap:12px;
+  padding:8px 22px 8px 10px; border-radius:999px;
+  color:var(--ink); text-align:left;
+  box-shadow:0 6px 0 var(--shade), 0 12px 20px var(--w-drop);
+}
+.spk{flex:none; width:52px; height:52px; border-radius:50%; background:var(--w-accent); color:#fff; display:grid; place-items:center; animation:ring 1.6s ease-out infinite}
+.spk svg{width:28px; height:28px}
+.ask-t{display:flex; flex-direction:column; min-width:0}
+.ask-t small{font-family:var(--f-en); font-weight:700; font-size:13px; color:var(--ink-soft); letter-spacing:.03em}
+.ask-word{font-family:var(--f-en); font-weight:700; color:var(--w-accent-ink); line-height:1.15}
+.field{
+  position:relative; flex:1; min-height:300px;
+  border-radius:30px; overflow:hidden;
+  border:5px solid #fff;
+  box-shadow:0 10px 0 rgba(74,43,94,.12), 0 18px 30px var(--w-drop);
+  touch-action:none;
+}
+.field canvas{position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:pointer}
+.field-cue{
+  position:absolute; left:50%; bottom:16px; transform:translateX(-50%);
+  margin:0; padding:8px 16px; border-radius:999px;
+  background:rgba(255,255,255,.9); color:var(--ink);
+  font-size:17px; white-space:nowrap; pointer-events:none;
+  animation:blink 1.6s ease-in-out infinite;
+}
+
+/* ---------- effects (js/fx.js) ---------- */
+#fx{position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:40}
+.fly{position:fixed; left:0; top:0; z-index:50; pointer-events:none; width:46px; height:46px}
+.toast{
+  position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:60;
+  transform:translateX(-50%); max-width:calc(100% - 32px);
+  padding:12px 20px; border-radius:999px;
+  background:#fff; color:var(--ink); border:3px solid var(--sun);
+  box-shadow:0 10px 24px rgba(74,43,94,.25);
+  font-family:var(--f-ko); font-size:18px; text-align:center;
+  animation:toastIn .35s cubic-bezier(.3,1.5,.5,1) both;
+}
+@keyframes toastIn{0%{opacity:0; transform:translateX(-50%) scale(.5)}100%{opacity:1; transform:translateX(-50%)}}

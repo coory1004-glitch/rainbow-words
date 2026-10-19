@@ -1,0 +1,104 @@
+/* screens.css (owner: ui) — home, world picker, intro word cards, result, sticker book, parent screen */
+
+/* ---------- home ---------- */
+.top{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.top-r{display:flex; align-items:center; gap:10px; margin-left:auto}
+.round.sm{width:48px; height:48px}
+.round.sm svg{width:24px; height:24px}
+.round.sm .ico{font-size:26px}
+.logo{font-size:clamp(28px, 7.2vw, 54px); justify-content:flex-start}
+.dress-chip{
+  --face:#ffffff; --edge:#ff9fd0; --shade:#e47db5;
+  position:absolute; left:14px; bottom:18px;
+  padding:9px 16px 9px 10px; border-radius:999px; border-width:3px;
+  font-size:19px; color:var(--ink);
+  display:flex; align-items:center; gap:6px;
+  box-shadow:0 5px 0 var(--shade), 0 8px 14px rgba(74,43,94,.2);
+}
+.dress-chip .ico{font-size:28px}
+.games{width:100%; max-width:760px; margin-inline:auto; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:clamp(10px, 2.6vw, 20px); padding-bottom:6px}
+.game{border-radius:30px; padding:14px 6px 12px; display:flex; flex-direction:column; align-items:center; gap:5px; color:var(--ink); text-align:center}
+.game .gi{font-size:clamp(48px, 13vw, 78px); animation:bob 3s ease-in-out var(--d, 0s) infinite}
+.gn{font-size:clamp(17px, 4.6vw, 23px); line-height:1.15}
+.gs{font-size:13px; color:var(--ink-soft)}
+.wide{
+  --face:#ffffff; --edge:#c3a6ff; --shade:#a084e6;
+  width:100%; max-width:760px; margin-inline:auto;
+  border-radius:999px; padding:12px 20px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  font-size:20px; color:var(--ink);
+}
+.wide .ico{font-size:32px}
+.wide small{font-size:15px; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.grownup{align-self:center; display:inline-flex; align-items:center; gap:6px}
+.grownup .ico{font-size:20px}
+
+/* ---------- word worlds ---------- */
+.worlds{width:100%; max-width:760px; margin-inline:auto; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:clamp(14px, 3vw, 22px); padding-bottom:8px}
+@media (min-width:720px){ .worlds{grid-template-columns:repeat(3, minmax(0,1fr))} }
+.tile{border-radius:34px; padding:18px 10px 16px; display:flex; flex-direction:column; align-items:center; gap:6px; color:var(--tile-ink, var(--ink)); text-align:center}
+.tile.rainbow{
+  border-color:transparent;
+  background:
+    linear-gradient(var(--face), var(--face)) padding-box,
+    linear-gradient(100deg, #ff4f64, #ff9330, #ffd23f, #2fc27a, #3a86ff, #9a63ff, #ff5fae) border-box;
+}
+.tile .ic{font-size:clamp(58px, 14vw, 88px); animation:bob 3.2s ease-in-out var(--d, 0s) infinite}
+.tile-ko{font-size:clamp(19px, 4.8vw, 25px); line-height:1.15}
+.tile-en{font-family:var(--f-en); font-weight:700; font-size:12.5px; letter-spacing:.04em; opacity:.72}
+.tile-prog{margin-top:2px; padding:4px 11px; border-radius:99px; background:var(--prog, rgba(255,255,255,.75)); font-size:15px; font-variant-numeric:tabular-nums; display:inline-flex; align-items:center; gap:4px}
+.tile-prog .ico{font-size:18px}
+
+/* ---------- word cards (intro) ---------- */
+.stage{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(10px, 2.4vh, 22px); text-align:center}
+.card{display:flex; flex-direction:column; align-items:center; gap:4px; border-radius:40px}
+.wig{display:block; animation:cardIn .5s cubic-bezier(.3,1.4,.5,1) var(--d, 0ms) both}
+.big{padding:clamp(14px, 3vh, 28px) clamp(24px, 6vw, 48px); border-radius:46px}
+.big .pic{font-size:min(42vw, 28vh, 220px); animation:bob 2.6s ease-in-out infinite}
+.ko{margin:-4px 0 0; font-size:clamp(22px, 5.6vw, 32px); color:var(--w-ink)}
+.controls{display:flex; align-items:center; justify-content:center; gap:24px}
+.next{--face:var(--mint); --edge:#22b585; --shade:#178e66; width:88px; height:88px; border-radius:50%; display:grid; place-items:center; color:#fff}
+.next svg{width:46px; height:46px; animation:nudge 1.3s ease-in-out infinite}
+
+/* ---------- result ---------- */
+.done{align-items:center; justify-content:center; text-align:center}
+.done-ko{margin:0; font-size:clamp(21px, 5.4vw, 30px)}
+.done-ko small{display:inline-flex; align-items:center; gap:2px}
+.done-ko small .ico{font-size:1.2em}
+.star-row{display:flex; flex-wrap:wrap; justify-content:center; gap:4px; font-size:clamp(30px, 7.5vw, 44px)}
+.star-row span{display:inline-flex; animation:popIn .5s cubic-bezier(.3,1.5,.5,1) calc(var(--i) * 110ms + 300ms) both}
+.goal{margin:0; padding:10px 18px; border-radius:20px; background:rgba(255,255,255,.75); color:var(--ink); font-size:clamp(16px, 4.2vw, 19px)}
+.sub{margin:4px 0 0; font-size:18px; font-weight:400; color:var(--w-ink-soft)}
+.learned{display:flex; flex-wrap:wrap; justify-content:center; gap:14px; max-width:640px}
+
+/* ---------- stickers ---------- */
+.sticker{
+  width:104px; padding:10px 6px 9px; border-radius:24px; border-width:3px;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  box-shadow:0 5px 0 var(--shade), 0 10px 16px var(--w-drop);
+}
+.sticker:active{box-shadow:0 1px 0 var(--shade), 0 4px 8px var(--w-drop)}
+.sticker .pic{font-size:52px}
+.sticker .w{font-family:var(--f-en); font-weight:700; font-size:13px; color:var(--ink); overflow-wrap:anywhere; text-align:center}
+.locked-st{--face:rgba(255,255,255,.6); --edge:rgba(255,255,255,.9); --shade:rgba(74,43,94,.12)}
+.locked-st .pic{filter:brightness(0) opacity(.15)}
+.locked-st .w{color:var(--ink-soft)}
+.shelf{background:rgba(255,255,255,.55); border-radius:30px; padding:14px 14px 20px; display:flex; flex-direction:column; gap:14px}
+.shelf h2{margin:0; font-size:22px; font-weight:400; display:flex; align-items:center; gap:10px; color:var(--ink)}
+.shelf h2 .ico{font-size:34px}
+.shelf h2 small{margin-left:auto; font-size:16px; color:var(--ink-soft); font-variant-numeric:tabular-nums}
+.stickers{display:grid; grid-template-columns:repeat(auto-fill, minmax(92px, 1fr)); gap:14px}
+.stickers .sticker{width:auto}
+
+/* ---------- parent (grown-ups) ---------- */
+.parent .panel{background:rgba(255,255,255,.75); border-radius:24px; padding:16px; display:flex; flex-direction:column; gap:10px; color:var(--ink); max-width:640px; width:100%; margin-inline:auto}
+.parent .panel h2{margin:0; font-size:20px; font-weight:400}
+.parent .panel p{margin:0; font-size:15px; color:var(--ink-soft); line-height:1.5}
+.parent .stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px; font-size:16px}
+.parent .stats b{font-family:var(--f-en); font-size:22px; display:block}
+.parent textarea{width:100%; min-height:72px; border-radius:14px; border:2px solid #e3d6ee; padding:10px; font:14px/1.4 ui-monospace, monospace; color:var(--ink); background:#fff; resize:vertical; -webkit-user-select:text; user-select:text}
+.parent .toggles{display:flex; flex-wrap:wrap; gap:10px}
+.parent .toggles .mini{border:2px solid #e3d6ee}
+.parent .toggles .mini.on{background:var(--mint); color:#fff; border-color:var(--mint)}
+.parent .gate{display:flex; flex-wrap:wrap; align-items:center; gap:10px}
+.parent .msg{font-size:15px; color:var(--w-accent-ink)}

@@ -1,0 +1,170 @@
+/* closet.css (owner: art) — the princess stage (art.js stageHTML) and the closet screen */
+
+/* ---------- princess stage ---------- */
+.stagebox{
+  position:relative; isolation:isolate;
+  width:100%; max-width:600px; margin-inline:auto;
+  height:clamp(250px, 42vh, 430px);
+  border-radius:34px; overflow:hidden;
+  background:#ffe0f1;
+  box-shadow:0 0 0 5px #fff, 0 9px 0 5px rgba(222,143,189,.45), 0 20px 34px 4px rgba(74,43,94,.2);
+}
+.stagebox::after{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:2;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.55), inset 0 -26px 40px -20px rgba(74,43,94,.18), inset 0 22px 30px -22px rgba(255,255,255,.9);
+}
+.stagebox.small{height:clamp(190px, 28vh, 280px); max-width:460px}
+.stagebox .scene{position:absolute; inset:0; width:100%; height:100%; display:block; z-index:0}
+.stagebox > :not(.scene):not(.stage-av){z-index:3}
+.stage-av{
+  position:absolute; left:50%; bottom:1.5%; z-index:1;
+  height:94%; aspect-ratio:2/3; transform:translateX(-50%);
+}
+@supports not (aspect-ratio:2/3){ .stage-av{width:62%} }
+.stage-av .avatar{display:block; width:100%; height:100%; overflow:visible; transform-origin:50% 97%; animation:avBreathe 3.4s ease-in-out infinite; will-change:transform}
+.stage-av .avatar .eye{transform-box:fill-box; transform-origin:center; animation:avBlink 5.2s ease-in-out infinite}
+.stage-av .avatar .eye + .eye{animation-delay:.02s}
+.stage-av.hop .avatar{animation:avHop .62s cubic-bezier(.3,1.6,.5,1) both, avBreathe 3.4s ease-in-out .62s infinite}
+.stage-av .petbox{position:absolute; left:76%; bottom:1%; width:40%; aspect-ratio:1; z-index:2; display:block}
+@supports not (aspect-ratio:1){ .stage-av .petbox{height:26.6%} }
+.stage-av .pet{display:block; width:100%; height:100%; object-fit:contain; font-size:inherit;
+  filter:drop-shadow(0 6px 4px rgba(74,43,94,.22)); transform-origin:50% 100%; animation:petBob 2.6s ease-in-out infinite}
+.stagebox.small .stage-av .petbox{left:74%; width:38%}
+
+@keyframes avBreathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.012,.988) translateY(.4%)}}
+@keyframes avBlink{0%,93%,100%{transform:scaleY(1)}95.5%{transform:scaleY(.08)}}
+@keyframes avHop{0%{transform:scale(1,1)}25%{transform:scale(1.06,.92)}55%{transform:translateY(-6%) scale(.97,1.04)}100%{transform:none}}
+@keyframes petBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7%) rotate(3deg) scale(1.02,.98)}}
+
+/* ---------- closet: the stage stays in view, the shelf scrolls under the tabs ---------- */
+.screen.closet{
+  height:calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  height:calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  min-height:540px; padding-bottom:12px; gap:12px; flex:none;
+}
+.closet .bar h1 .ico{width:1.3em; height:1.3em}
+.closet-grid{flex:1; min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr); gap:16px}
+.stage-wrap{position:relative; padding:5px 5px 9px; display:flex; flex-direction:column; min-height:0}
+.closet .stagebox{height:clamp(240px, 38vh, 440px)}
+
+.shop{
+  min-height:0; display:flex; flex-direction:column;
+  background:rgba(255,255,255,.62); border:3px solid rgba(255,255,255,.9);
+  border-radius:30px; box-shadow:0 10px 26px rgba(74,43,94,.1);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  overflow:hidden;
+}
+.tabs{display:flex; gap:8px; overflow-x:auto; padding:10px 10px 8px; scrollbar-width:none; flex:none; scroll-snap-type:x proximity}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:none; width:70px; min-height:70px; scroll-snap-align:start;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  padding:6px 4px 5px; border-radius:22px;
+  background:#fff; border:3px solid #f5dcea; color:var(--ink-soft);
+  font-size:12.5px; line-height:1.1; white-space:nowrap;
+  box-shadow:0 4px 0 #f0d2e3;
+  transition:transform .15s cubic-bezier(.3,1.5,.5,1), box-shadow .15s ease;
+}
+.tab .ico{width:36px; height:36px; font-size:36px; transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.tab:active{transform:translateY(3px); box-shadow:0 1px 0 #f0d2e3}
+.tab.on{background:linear-gradient(#fff, #fff0f8); border-color:var(--w-accent); color:var(--w-accent-ink); box-shadow:0 4px 0 #d63a87, 0 8px 14px rgba(214,58,135,.22)}
+.tab.on .ico{transform:scale(1.14) rotate(-6deg)}
+
+.shelf{
+  flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
+  padding:14px 12px 18px;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 14px), transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 12px, #000 calc(100% - 14px), transparent 100%);
+  display:flex; flex-direction:column; gap:16px;
+}
+.items{display:grid; grid-template-columns:repeat(auto-fill, minmax(96px, 1fr)); gap:16px 12px}
+.item{
+  --face:#fff; --edge:#f6d3e6; --shade:#ebbcd6;
+  position:relative; border-radius:24px; border-width:3px; padding:5px 5px 7px;
+  display:flex; flex-direction:column; align-items:center; gap:3px; min-width:0;
+  box-shadow:0 5px 0 var(--shade), 0 9px 16px rgba(74,43,94,.12);
+}
+.item:active{box-shadow:0 1px 0 var(--shade), 0 3px 8px rgba(74,43,94,.12)}
+.th{
+  width:100%; aspect-ratio:1; display:grid; place-items:center; border-radius:18px; overflow:hidden;
+  background:radial-gradient(circle at 50% 38%, #ffffff 0, #fff5fb 52%, #ffe4f2 100%);
+  box-shadow:inset 0 -3px 0 rgba(236,180,214,.35);
+}
+.th > svg{width:90%; height:90%; display:block; overflow:visible}
+.th > svg.scene{position:static; width:100%; height:100%}
+.th > .ico{width:80%; height:80%; font-size:inherit; filter:drop-shadow(0 4px 3px rgba(74,43,94,.18))}
+.item[data-cat="bg"] .th{box-shadow:none}
+.nm{font-family:var(--f-en); font-weight:700; font-size:12.5px; color:var(--ink); text-align:center; line-height:1.15; min-height:2.3em; display:flex; align-items:center; overflow-wrap:anywhere}
+
+.item.wearing{--face:#fff4fa; --edge:var(--w-accent); --shade:#d63a87}
+.item.wearing .th{background:radial-gradient(circle at 50% 38%, #fff 0, #ffe9f5 55%, #ffd2ea 100%)}
+.item.trying{--edge:#b79bff; --shade:#8f6fe0; animation:tryRing 1.3s ease-out infinite}
+.badge,.price{position:absolute; top:-9px; right:-7px; border-radius:99px; display:inline-flex; align-items:center; font-variant-numeric:tabular-nums; z-index:1}
+.badge{width:34px; height:34px; justify-content:center; background:var(--mint); border:3px solid #fff; box-shadow:0 3px 6px rgba(23,142,102,.35)}
+.badge .ico{width:22px; height:22px}
+.price{gap:1px; padding:2px 9px 2px 4px; background:#fff; border:2.5px solid #f2d6a2; color:#8a6a3a; font-family:var(--f-en); font-size:15px; box-shadow:0 3px 6px rgba(74,43,94,.14)}
+.price .ico{width:20px; height:20px}
+.price b{font-weight:700}
+.item.can .price{background:linear-gradient(#fff3b0, #ffd23f); border-color:#fff; color:#6a4a00; animation:wiggleIn 1.6s ease-in-out infinite}
+.item.locked:not(.can) .th > *{opacity:.88}
+
+/* the "trying it on" ribbon and the buy bar */
+.stagebox.trying{box-shadow:0 0 0 5px #fff, 0 0 0 9px #c9b0ff, 0 9px 0 9px rgba(143,111,224,.35), 0 20px 34px 4px rgba(74,43,94,.2)}
+.trytag{
+  position:absolute; left:12px; top:12px; z-index:4;
+  display:inline-flex; align-items:center; gap:4px; padding:5px 12px 5px 6px; border-radius:99px;
+  background:rgba(255,255,255,.92); color:#7b52c4; font-size:15px; box-shadow:0 4px 10px rgba(74,43,94,.16);
+  animation:popIn .45s cubic-bezier(.3,1.5,.5,1) both;
+}
+.trytag .ico{width:24px; height:24px}
+.trybar{
+  position:relative; z-index:5; align-self:center; flex:none; margin-top:16px;
+  display:flex; align-items:center; gap:10px; padding:8px; border-radius:999px;
+  background:rgba(255,255,255,.95); box-shadow:0 10px 24px rgba(74,43,94,.25), 0 0 0 3px rgba(255,255,255,.7);
+  animation:tryIn .5s cubic-bezier(.3,1.5,.5,1) both; white-space:nowrap;
+}
+.buy{
+  --face:#ff5fae; --edge:#ff8cc6; --shade:#c42a77;
+  display:inline-flex; align-items:center; gap:6px; min-height:62px;
+  padding:6px 22px 6px 10px; border-radius:999px; border-width:3px; color:#fff;
+  box-shadow:0 6px 0 var(--shade), 0 10px 18px rgba(196,42,119,.35);
+  animation:buyPulse 1.4s ease-in-out infinite;
+}
+.buy .ico{width:44px; height:44px; filter:drop-shadow(0 2px 2px rgba(120,20,70,.35))}
+.buy b{font-family:var(--f-en); font-weight:700; font-size:32px; line-height:1; text-shadow:0 2px 0 rgba(150,20,80,.35)}
+.buy span{font-size:20px; margin-left:4px}
+.buy:active{box-shadow:0 1px 0 var(--shade), 0 4px 8px rgba(196,42,119,.3)}
+.need{display:flex; align-items:center; gap:10px; padding-left:8px; color:var(--ink)}
+.meter{position:relative; width:clamp(80px, 22vw, 130px); height:18px; border-radius:99px; background:#f1e3f6; box-shadow:inset 0 2px 3px rgba(74,43,94,.15); overflow:hidden}
+.meter i{position:absolute; inset:0 auto 0 0; width:var(--p); min-width:14px; border-radius:99px; background:linear-gradient(#ffe680, #ffc21f); box-shadow:inset 0 -3px 0 rgba(200,130,0,.3), inset 0 3px 0 rgba(255,255,255,.6)}
+.need-n{display:inline-flex; align-items:center; gap:2px; font-family:var(--f-en); font-weight:700; font-size:22px}
+.need-n .ico{width:30px; height:30px}
+.need-n small{font-size:16px; color:var(--ink-soft); font-weight:600}
+.go{--face:#ffffff; --edge:#c3a6ff; --shade:#a084e6; width:58px; height:58px; border-radius:50%; border-width:3px; display:grid; place-items:center; box-shadow:0 5px 0 var(--shade), 0 8px 14px rgba(74,43,94,.18)}
+.go .ico{width:36px; height:36px}
+.go:active{box-shadow:0 1px 0 var(--shade)}
+.tryx{width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:#f6edfb; color:#9a7bb8}
+.tryx svg{width:20px; height:20px}
+
+.closet .note .ico{width:1.3em; height:1.3em}
+.closet .shelf .row{padding-top:0}
+
+@keyframes tryIn{0%{opacity:0; transform:translateY(-30%) scale(.6)}100%{opacity:1; transform:none}}
+@keyframes buyPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes tryRing{0%{box-shadow:0 5px 0 var(--shade), 0 0 0 0 rgba(183,155,255,.7)}100%{box-shadow:0 5px 0 var(--shade), 0 0 0 14px rgba(183,155,255,0)}}
+
+/* tablets and desktops in landscape: stage on the left, shop on the right */
+@media (min-width:760px) and (orientation:landscape){
+  .closet-grid{grid-template-columns:minmax(0, 1fr) minmax(0, 1.12fr); grid-template-rows:minmax(0,1fr); gap:22px}
+  .closet .stagebox{height:auto; flex:1; min-height:0; max-width:none}
+  .items{grid-template-columns:repeat(auto-fill, minmax(104px, 1fr))}
+}
+@media (min-width:600px) and (orientation:portrait){
+  .closet .stagebox{height:clamp(300px, 40vh, 480px)}
+  .tab{width:78px}
+  .items{grid-template-columns:repeat(auto-fill, minmax(110px, 1fr))}
+}
+@media (max-height:520px) and (orientation:landscape){
+  .screen.closet{height:auto; min-height:0}
+  .closet .shelf{overflow:visible; -webkit-mask-image:none; mask-image:none}
+}

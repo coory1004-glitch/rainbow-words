@@ -1,0 +1,137 @@
+/* base.css (owner: ui) — tokens, page frame, shared squishy-toy surfaces, rainbow letters, shared bits, keyframes */
+:root{padding-top:env(safe-area-inset-top, 0px); padding-bottom:env(safe-area-inset-bottom, 0px)}
+body{margin:0; font:14px/1.4 system-ui, sans-serif}
+img{max-width:100%}
+[hidden]{display:none !important}
+
+/* Layout: the dressed-up princess is the home base. Games fill one framed play field under a word bar; the closet pairs her stage with a shelf of things to buy. */
+:root{
+  --ink:#4a2b5e;
+  --ink-soft:#86669a;
+  --sun:#ffd23f;
+  --mint:#34cf9c;
+  --outline:#ffffff;
+  --f-ko:"Jua","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-en:"Fredoka","Varela Round","Trebuchet MS",system-ui,sans-serif;
+
+  /* world tokens: home values here, each world overrides them on body[data-world] */
+  --w-top:#ffe0f1; --w-bot:#e4dcff;
+  --w-ink:#4a2b5e; --w-ink-soft:#7d5f92;
+  --w-card:#ffffff; --w-edge:#f4b6d8; --w-shade:#de8fbd;
+  --w-accent:#ff5fae; --w-accent-ink:#d63a87;
+  --w-dot:rgba(255,255,255,.65); --w-seg:rgba(255,255,255,.75);
+  --w-drop:rgba(74,43,94,.18);
+  color-scheme:light;
+}
+body[data-world="unicorn"]{ --w-top:#ffd6ee; --w-bot:#e8d8ff; --w-edge:#ff9fd0; --w-shade:#e47db5; --w-accent:#ff5fae; --w-accent-ink:#d63a87; }
+body[data-world="sweets"]{ --w-top:#fff0d8; --w-bot:#ffd6e4; --w-edge:#ffb98a; --w-shade:#e9966a; --w-accent:#ff6f86; --w-accent-ink:#d9475f; }
+body[data-world="colors"]{ --w-top:#fff6c4; --w-bot:#d6efff; --w-edge:#b9a4ff; --w-shade:#9a82e8; --w-accent:#3f8cff; --w-accent-ink:#2a6fdc; }
+body[data-world="cars"]{ --w-top:#c6ebff; --w-bot:#e4fae2; --w-edge:#7cc0ff; --w-shade:#5a9fe3; --w-accent:#2f86ff; --w-accent-ink:#1f6ad6; }
+body[data-world="halloween"]{ --w-top:#24133f; --w-bot:#56307f; --w-ink:#fff1de; --w-ink-soft:#dcc6f4; --w-card:#fff6ea; --w-edge:#ff9a3c; --w-shade:#c4661a; --w-accent:#ff8a1f; --w-accent-ink:#cf5a00; --w-dot:rgba(255,236,190,.32); --w-seg:rgba(255,255,255,.2); --w-drop:rgba(0,0,0,.35); }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family:var(--f-ko);
+  color:var(--w-ink);
+  background:
+    radial-gradient(var(--w-dot) 2px, transparent 2.8px) 0 0/44px 44px,
+    radial-gradient(var(--w-dot) 1.4px, transparent 2px) 22px 22px/44px 44px,
+    linear-gradient(170deg, var(--w-top), var(--w-bot)) fixed;
+  background-color:var(--w-top);
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none; user-select:none;
+  touch-action:manipulation;
+  overflow-x:hidden;
+}
+#app{
+  min-height:100%;
+  display:flex; flex-direction:column;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+.screen{
+  flex:1; width:100%; max-width:980px; margin-inline:auto;
+  display:flex; flex-direction:column;
+  padding-block:14px 26px;
+  gap:clamp(12px, 2.2vh, 20px);
+}
+button{font:inherit; color:inherit; background:none; border:0; padding:0; margin:0; cursor:pointer}
+button:focus-visible{outline:4px solid var(--w-accent); outline-offset:4px}
+
+/* the squishy toy surface shared by every tappable thing */
+.toy{
+  --face:var(--w-card); --edge:var(--w-edge); --shade:var(--w-shade);
+  background:var(--face);
+  border:4px solid var(--edge);
+  box-shadow:0 8px 0 var(--shade), 0 16px 26px var(--w-drop);
+  transition:transform .12s ease, box-shadow .12s ease, opacity .3s ease;
+}
+.toy:active{transform:translateY(6px); box-shadow:0 2px 0 var(--shade), 0 6px 12px var(--w-drop)}
+
+/* ---------- rainbow letters ---------- */
+.word{
+  margin:0; max-width:100%;
+  display:flex; flex-wrap:wrap; justify-content:center; column-gap:.32em;
+  font-family:var(--f-en); font-weight:700; line-height:1.15;
+}
+.wgrp{display:inline-flex; white-space:nowrap}
+.ltr{
+  display:inline-block; color:var(--c);
+  text-shadow:
+    0 .05em 0 var(--outline), 0 -.05em 0 var(--outline), .05em 0 0 var(--outline), -.05em 0 0 var(--outline),
+    .036em .036em 0 var(--outline), -.036em .036em 0 var(--outline), .036em -.036em 0 var(--outline), -.036em -.036em 0 var(--outline),
+    0 .13em 0 var(--w-drop);
+  animation:letterPop .55s cubic-bezier(.3,1.5,.5,1) var(--d, 0ms) both;
+}
+.ltr[data-act]{cursor:pointer}
+
+/* ---------- shared bits ---------- */
+.bar{display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:12px}
+.bar h1{margin:0; text-align:center; font-size:clamp(22px, 6vw, 34px); font-weight:400; display:flex; align-items:center; justify-content:center; gap:8px}
+.bar h1 .ico{font-size:1.25em}
+.round{
+  --face:#ffffff;
+  width:58px; height:58px; border-radius:50%;
+  border-width:3px;
+  display:grid; place-items:center;
+  color:var(--ink);
+  box-shadow:0 6px 0 var(--shade), 0 10px 16px var(--w-drop);
+}
+.round:active{box-shadow:0 1px 0 var(--shade), 0 4px 8px var(--w-drop)}
+.round svg{width:28px; height:28px}
+.round .ico{font-size:32px}
+.pill{
+  display:flex; align-items:center; gap:6px;
+  padding:8px 14px 8px 10px; border-radius:999px;
+  background:#fff; border:3px solid var(--w-edge); color:var(--ink);
+  font-size:22px; font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.pill .ico{font-size:26px}
+.rbar{display:flex; gap:5px; height:16px}
+.rbar i{flex:1; border-radius:99px; background:var(--w-seg)}
+.rbar i.on{background:var(--c)}
+.rbar i.now{background:var(--c); animation:blink 1.1s ease-in-out infinite}
+.cue{margin:0; font-size:clamp(16px, 4.2vw, 20px); color:var(--w-ink-soft); text-align:center}
+.note{margin:0; text-align:center; font-size:14px; color:var(--w-ink-soft); line-height:1.5}
+.note .ico{font-size:1.3em; vertical-align:-.25em}
+.sec{margin:4px 0 0; font-size:clamp(19px, 5vw, 24px); font-weight:400; text-align:center}
+.btn{padding:14px 26px; border-radius:999px; font-size:clamp(19px, 5vw, 25px); color:var(--ink); white-space:nowrap; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+.btn .ico{font-size:1.3em}
+.btn.primary{--face:#ff5fae; --edge:#ec4597; --shade:#bf3378; color:#fff}
+.row{display:flex; flex-wrap:wrap; justify-content:center; gap:14px; padding-top:6px}
+.mini{padding:8px 16px; border-radius:999px; background:rgba(255,255,255,.75); color:var(--ink); font-size:15px; white-space:nowrap}
+.mini.danger{background:#ff4f64; color:#fff}
+
+@keyframes letterPop{0%{opacity:0; transform:translateY(40%) scale(.3)}100%{opacity:1; transform:none}}
+@keyframes cardIn{0%{opacity:0; transform:scale(.55) translateY(12%)}100%{opacity:1; transform:none}}
+@keyframes popIn{0%{opacity:0; transform:scale(.3)}70%{opacity:1; transform:scale(1.15)}100%{opacity:1; transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6%) rotate(2deg)}}
+@keyframes nudge{0%,100%{transform:translateX(-3px)}50%{transform:translateX(6px)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 var(--w-accent)}100%{box-shadow:0 0 0 16px rgba(255,255,255,0)}}
+@keyframes blink{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes wiggleIn{0%,100%{transform:rotate(0)}10%{transform:rotate(-10deg)}20%{transform:rotate(8deg)}30%{transform:rotate(0)}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition:none !important}
+}
